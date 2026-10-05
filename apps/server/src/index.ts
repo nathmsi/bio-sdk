@@ -20,12 +20,18 @@ export async function buildApp() {
 
   // ── Plugins ─────────────────────────────────────────────────────────────────
   await app.register(helmet, { contentSecurityPolicy: false });
+  const extraOrigins = (process.env['ALLOWED_ORIGINS'] ?? '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
   await app.register(cors, {
     origin: (origin, cb) => {
       const allowed = [
         'http://localhost:3000',
         'http://localhost:5173',
         'http://localhost:9000',
+        ...extraOrigins,
         undefined, // same-origin and non-browser requests
       ];
       cb(null, allowed.includes(origin));
