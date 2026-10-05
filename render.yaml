@@ -5,7 +5,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: free                     # upgrade to starter for always-on
+    plan: free
     region: oregon
     envVars:
       - key: NODE_ENV
@@ -13,23 +13,24 @@ services:
       - key: LOG_LEVEL
         value: info
     healthCheckPath: /health
-    autoDeploy: true               # deploys automatically on every push to main
+    autoDeploy: true
 
   # ── Dashboard (Static Site) ───────────────────────────────────────────────
-  - type: static
+  - type: web
     name: bio-sdk-dashboard
+    runtime: static
     buildCommand: >
-      npm install -g pnpm@9 &&
+      npm install -g pnpm@11 &&
       pnpm install --frozen-lockfile &&
       pnpm --filter @bio-sdk/protocol build &&
       pnpm --filter @bio-sdk/sdk build &&
       pnpm --filter @bio-sdk/dashboard build
     staticPublishPath: ./apps/dashboard/dist
     envVars:
-      # Set this to the bio-sdk-server URL after the first deploy
-      # e.g. https://bio-sdk-server.onrender.com
+      - key: NODE_VERSION
+        value: "22"
       - key: VITE_API_URL
-        sync: false                # you fill this in Render's dashboard
+        sync: false
     headers:
       - path: /*
         name: Cache-Control
@@ -40,5 +41,5 @@ services:
     routes:
       - type: rewrite
         source: /*
-        destination: /index.html   # SPA fallback
+        destination: /index.html
     autoDeploy: true
