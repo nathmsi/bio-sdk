@@ -80,10 +80,16 @@ jobs:
     steps:
       - name: Trigger Render deploy — server
         run: |
-          curl -f -s -X POST "${{ vars.RENDER_SERVER_DEPLOY_HOOK }}" \
-            -H "Accept: application/json" | jq .
+          STATUS=$(curl -s -o /tmp/render-server.json -w "%{http_code}" -X POST \
+            "${{ vars.RENDER_SERVER_DEPLOY_HOOK }}" -H "Accept: application/json")
+          cat /tmp/render-server.json
+          echo "HTTP $STATUS"
+          [[ "$STATUS" -ge 200 && "$STATUS" -lt 300 ]] || exit 1
 
       - name: Trigger Render deploy — dashboard
         run: |
-          curl -f -s -X POST "${{ vars.RENDER_DASHBOARD_DEPLOY_HOOK }}" \
-            -H "Accept: application/json" | jq .
+          STATUS=$(curl -s -o /tmp/render-dashboard.json -w "%{http_code}" -X POST \
+            "${{ vars.RENDER_DASHBOARD_DEPLOY_HOOK }}" -H "Accept: application/json")
+          cat /tmp/render-dashboard.json
+          echo "HTTP $STATUS"
+          [[ "$STATUS" -ge 200 && "$STATUS" -lt 300 ]] || exit 1
