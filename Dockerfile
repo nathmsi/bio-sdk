@@ -1,6 +1,6 @@
 # ── Stage 1: build ────────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
-RUN corepack enable && corepack prepare pnpm@9 --activate
+FROM node:22-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@11 --activate
 WORKDIR /app
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
@@ -17,8 +17,8 @@ RUN pnpm --filter @bio-sdk/protocol build
 RUN pnpm --filter @bio-sdk/server build
 
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
-FROM node:20-alpine AS runtime
-RUN corepack enable && corepack prepare pnpm@9 --activate
+FROM node:22-alpine AS runtime
+RUN corepack enable && corepack prepare pnpm@11 --activate
 WORKDIR /app
 
 # Non-root user
