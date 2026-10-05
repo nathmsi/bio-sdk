@@ -1,0 +1,43 @@
+{
+  "name": "@bio-sdk/sdk",
+  "version": "1.0.0",
+  "description": "Zero-dependency behavioral biometrics SDK — TypeScript strict, 1.4 kB gzip",
+  "keywords": ["biometrics", "behavioral", "fraud-detection", "typescript", "sdk"],
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": ["dist", "README.md"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup && node scripts/bundle-umd.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@bio-sdk/protocol": "workspace:*",
+    "@vitest/coverage-v8": "^1.6.0",
+    "esbuild": "^0.21.0",
+    "fast-check": "^3.19.0",
+    "jsdom": "^24.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

@@ -1,23 +1,42 @@
 {
-  "name": "bio-sdk",
-  "version": "1.0.0",
-  "description": "Behavioral biometrics SDK demo",
-  "type": "module",
-  "main": "dist/bio-sdk.umd.js",
-  "module": "dist/bio-sdk.esm.js",
-  "types": "dist/index.d.ts",
+  "name": "bio-sdk-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Behavioral biometrics SDK — production-quality monorepo demo",
   "scripts": {
-    "build": "node build.mjs",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "dev": "node demo/server.js"
+    "build": "pnpm -r build",
+    "dev": "pnpm --parallel -r dev",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @bio-sdk/e2e test",
+    "verify": "pnpm format && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "clean": "pnpm -r clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "esbuild": "^0.21.0",
-    "vitest": "^1.5.0",
-    "@vitest/coverage-v8": "^1.5.0",
-    "jsdom": "^24.0.0",
-    "@types/node": "^20.0.0"
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix --max-warnings 0", "prettier --write"],
+    "*.{json,md,yml,yaml,css}": ["prettier --write"]
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "pnpm": {
+    "allowBuild": ["esbuild"]
   }
 }
