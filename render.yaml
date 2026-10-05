@@ -16,9 +16,8 @@ services:
     autoDeploy: true               # deploys automatically on every push to main
 
   # ── Dashboard (Static Site) ───────────────────────────────────────────────
-  - type: web
+  - type: static
     name: bio-sdk-dashboard
-    runtime: static
     buildCommand: >
       npm install -g pnpm@9 &&
       pnpm install --frozen-lockfile &&
@@ -26,7 +25,6 @@ services:
       pnpm --filter @bio-sdk/sdk build &&
       pnpm --filter @bio-sdk/dashboard build
     staticPublishPath: ./apps/dashboard/dist
-    plan: free
     envVars:
       # Set this to the bio-sdk-server URL after the first deploy
       # e.g. https://bio-sdk-server.onrender.com
