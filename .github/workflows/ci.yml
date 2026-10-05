@@ -79,19 +79,11 @@ jobs:
 
     steps:
       - name: Trigger Render deploy — server
-        if: vars.RENDER_SERVER_DEPLOY_HOOK != ''
         run: |
-          curl -s -X POST "${{ vars.RENDER_SERVER_DEPLOY_HOOK }}" \
+          curl -f -s -X POST "${{ vars.RENDER_SERVER_DEPLOY_HOOK }}" \
             -H "Accept: application/json" | jq .
-        continue-on-error: true
 
       - name: Trigger Render deploy — dashboard
-        if: vars.RENDER_DASHBOARD_DEPLOY_HOOK != ''
         run: |
-          curl -s -X POST "${{ vars.RENDER_DASHBOARD_DEPLOY_HOOK }}" \
+          curl -f -s -X POST "${{ vars.RENDER_DASHBOARD_DEPLOY_HOOK }}" \
             -H "Accept: application/json" | jq .
-        continue-on-error: true
-
-      - name: Skip (deploy hooks not configured)
-        if: vars.RENDER_SERVER_DEPLOY_HOOK == '' && vars.RENDER_DASHBOARD_DEPLOY_HOOK == ''
-        run: echo "Render deploy hooks not set — skipping. See README for setup."
