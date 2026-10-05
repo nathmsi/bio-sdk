@@ -6,7 +6,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       thresholds: { lines: 85, branches: 75, functions: 80 },
-      exclude: ['scripts/**', 'dist/**', 'src/analytics.ts'],
+      exclude: ['scripts/**', 'dist/**', 'src/analytics.ts', '*.config.ts'],
     },
   },
 });
