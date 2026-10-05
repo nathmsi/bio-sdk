@@ -30,8 +30,10 @@ COPY --from=builder --chown=biosdk:biosdk /app/packages/protocol/dist ./packages
 COPY --from=builder --chown=biosdk:biosdk /app/apps/server/dist ./apps/server/dist
 COPY --from=builder --chown=biosdk:biosdk /app/apps/server/package.json ./apps/server/package.json
 
-ENV NODE_ENV=production PORT=9000
-EXPOSE 9000
-HEALTHCHECK --interval=15s --timeout=3s CMD wget -qO- http://localhost:9000/health || exit 1
+ENV NODE_ENV=production
+# PORT is injected by Render (10000) or defaults to 9000 locally
+ENV PORT=9000
+EXPOSE $PORT
+HEALTHCHECK --interval=15s --timeout=3s CMD wget -qO- http://localhost:${PORT}/health || exit 1
 
 CMD ["node", "apps/server/dist/index.js"]

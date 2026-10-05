@@ -9,7 +9,8 @@ import { HumanScore } from './components/HumanScore.js';
 import { KeyHistogram } from './components/KeyHistogram.js';
 import { PrivacyPanel } from './components/PrivacyPanel.js';
 
-const SERVER = 'http://localhost:9000';
+// In production, point to the Render server URL via VITE_API_URL env var
+const SERVER = import.meta.env['VITE_API_URL'] ?? 'http://localhost:9000';
 
 export function App() {
   const { events, connected } = useSse(`${SERVER}/events`);

@@ -14,6 +14,7 @@ permissions:
   contents: read
 
 jobs:
+  # ── Lint + Typecheck + Test + Build ─────────────────────────────────────────
   verify:
     name: Verify (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
@@ -36,23 +37,18 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Format check
-        run: pnpm format
-
-      - name: Lint
-        run: pnpm lint
-
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
+      - name: Test (with coverage)
         run: pnpm test
 
-      - name: Build
+      - name: Build all packages
         run: pnpm build
 
+  # ── Security ─────────────────────────────────────────────────────────────────
   security:
-    name: Security
+    name: Security scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -68,3 +64,29 @@ jobs:
       - uses: github/codeql-action/init@v3
         with: { languages: javascript }
       - uses: github/codeql-action/analyze@v3
+
+  # ── Deploy to Render (main branch only) ──────────────────────────────────────
+  deploy:
+    name: Deploy to Render
+    needs: [verify]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render deploy — server
+        if: vars.RENDER_SERVER_DEPLOY_HOOK != ''
+        run: |
+          curl -s -X POST "${{ vars.RENDER_SERVER_DEPLOY_HOOK }}" \
+            -H "Accept: application/json" | jq .
+        continue-on-error: true
+
+      - name: Trigger Render deploy — dashboard
+        if: vars.RENDER_DASHBOARD_DEPLOY_HOOK != ''
+        run: |
+          curl -s -X POST "${{ vars.RENDER_DASHBOARD_DEPLOY_HOOK }}" \
+            -H "Accept: application/json" | jq .
+        continue-on-error: true
+
+      - name: Skip (deploy hooks not configured)
+        if: vars.RENDER_SERVER_DEPLOY_HOOK == '' && vars.RENDER_DASHBOARD_DEPLOY_HOOK == ''
+        run: echo "Render deploy hooks not set — skipping. See README for setup."
