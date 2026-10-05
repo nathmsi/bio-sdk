@@ -19,7 +19,6 @@ services:
   - type: web
     name: bio-sdk-dashboard
     runtime: static
-    region: oregon
     buildCommand: >
       npm install -g pnpm@9 &&
       pnpm install --frozen-lockfile &&
