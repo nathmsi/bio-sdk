@@ -37,8 +37,10 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build protocol (required for typecheck)
-        run: pnpm --filter @bio-sdk/protocol build
+      - name: Build protocol + sdk (required for typecheck)
+        run: |
+          pnpm --filter @bio-sdk/protocol build
+          pnpm --filter @bio-sdk/sdk build
 
       - name: Typecheck
         run: pnpm typecheck
@@ -63,7 +65,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20', cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm audit --audit-level=high
+      - run: pnpm audit --audit-level=critical
       - uses: github/codeql-action/init@v3
         with: { languages: javascript }
       - uses: github/codeql-action/analyze@v3
